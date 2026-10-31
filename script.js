@@ -228,3 +228,67 @@ document.addEventListener("DOMContentLoaded", () => {
     revealItems.forEach((item) => item.classList.add("revealed"));
   }
 });
+
+(function () {
+    "use strict";
+
+    var popup = document.getElementById("ownerSecurityPopup");
+    var message = document.getElementById("securityPopupMessage");
+    var closeButton = document.getElementById("securityPopupClose");
+    var hideTimer;
+
+    function showSecurityPopup(text) {
+        message.textContent = text;
+        popup.classList.add("active");
+
+        clearTimeout(hideTimer);
+    }
+
+    function closeSecurityPopup() {
+        popup.classList.remove("active");
+    }
+
+    // Disable right-click and show the custom popup
+    document.addEventListener("contextmenu", function (event) {
+        event.preventDefault();
+
+        showSecurityPopup(
+            "Right-click functionality is disabled on this website."
+        );
+    });
+
+    // Disable selected keyboard shortcuts
+    document.addEventListener("keydown", function (event) {
+        var key = event.key.toLowerCase();
+
+        var blockedShortcut =
+            event.key === "F12" ||
+            (event.ctrlKey && event.shiftKey &&
+                ["i", "j", "c"].includes(key)) ||
+            (event.ctrlKey && key === "u");
+
+        if (blockedShortcut) {
+            event.preventDefault();
+
+            showSecurityPopup(
+                "This keyboard shortcut is restricted on this website."
+            );
+        }
+
+        // Close popup using Escape
+        if (event.key === "Escape") {
+            closeSecurityPopup();
+        }
+    });
+
+    // Close using the button
+    closeButton.addEventListener("click", closeSecurityPopup);
+
+    // Close when clicking the dark background
+    popup.addEventListener("click", function (event) {
+        if (event.target === popup) {
+            closeSecurityPopup();
+        }
+    });
+
+})();
