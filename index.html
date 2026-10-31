@@ -1707,58 +1707,43 @@
 
     </div>
 
-    <!-- =========================================
-         Right Click Disable
-    ========================================== -->
-
-    <script>
-        document.addEventListener("contextmenu", function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            let msg = document.getElementById("ownerRightClickMessage");
-
-            if (!msg) {
-                msg = document.createElement("div");
-                msg.id = "ownerRightClickMessage";
-
-                msg.innerHTML = `
-                    <div style="
-                        position:fixed;
-                        top:25px;
-                        left:50%;
-                        transform:translateX(-50%);
-                        background:#171717;
-                        color:#fff;
-                        padding:16px 24px;
-                        border-left:4px solid #dc3545;
-                        border-radius:10px;
-                        box-shadow:0 8px 30px #0008;
-                        font:14px Arial,sans-serif;
-                        z-index:2147483647;
-                        width:max-content;
-                        max-width:90vw;
-                    ">
-                        <strong>Right-Click Disabled</strong>
-                        <div style="margin-top:6px">
-                            Disabled by owner. Please contact the website owner.
-                        </div>
-                    </div>`;
-
-                document.body.appendChild(msg);
-            } else {
-                msg.style.display = "block";
-            }
-
-            clearTimeout(window.rightClickMessageTimer);
-
-            window.rightClickMessageTimer = setTimeout(function () {
-                msg.style.display = "none";
-            }, 2500);
-
-            return false;
-        }, true);
-    </script>
+    <div id="ownerSecurityPopup" role="dialog" aria-modal="true" aria-labelledby="securityPopupTitle">
+    
+        <div class="security-card">
+    
+            <div class="person-icon">
+                <svg viewBox="0 0 24 24" fill="none"
+                     stroke-width="1.6" stroke-linecap="round"
+                     stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="7" r="4"></circle>
+                    <path d="M4 21v-2a8 8 0 0 1 16 0v2"></path>
+                </svg>
+            </div>
+    
+            <div class="security-badge">RESTRICTED ACTION</div>
+    
+            <h2 class="security-title" id="securityPopupTitle">
+                Access Restricted
+            </h2>
+    
+            <p class="security-message" id="securityPopupMessage">
+                Right-click functionality is disabled on this website.
+            </p>
+    
+            <div class="owner-message">
+                Need assistance? <span>Please contact the owner.</span>
+            </div>
+    
+            <button class="security-close" id="securityPopupClose">
+                Understood
+            </button>
+    
+            <div class="security-footer">
+                WEBSITE SECURITY NOTICE
+            </div>
+    
+        </div>
+    </div>
 
 </body>
 
