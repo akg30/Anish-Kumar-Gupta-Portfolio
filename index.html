@@ -1707,90 +1707,311 @@
 
     </div>
 
-    <!-- =========================================
-         Right Click Disable
-    ========================================== -->
+```html
+<script>
+(function () {
+    if (document.getElementById("premiumSecurityStyles")) return;
 
-    <script>
-        document.addEventListener("contextmenu", function (e) {
+    const css = document.createElement("style");
+    css.id = "premiumSecurityStyles";
+    css.textContent = `
+        #securityMessage {
+            position: fixed;
+            top: 26px;
+            left: 50%;
+            width: min(390px, calc(100vw - 28px));
+            z-index: 999999;
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(-50%, -18px) scale(.97);
+            transition: opacity .3s ease, transform .3s ease,
+                        visibility .3s ease;
+            font-family: Arial, Helvetica, sans-serif;
+            pointer-events: none;
+        }
+
+        #securityMessage.security-visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0) scale(1);
+        }
+
+        #securityMessage .premium-card {
+            position: relative;
+            overflow: hidden;
+            padding: 27px 24px 21px;
+            color: #fff;
+            text-align: center;
+            background:
+                radial-gradient(ellipse at 50% 0%, rgba(229,9,20,.18), transparent 58%),
+                linear-gradient(145deg, #171717, #080808 72%);
+            border: 1px solid rgba(229,9,20,.65);
+            border-radius: 17px;
+            box-shadow: 0 18px 65px rgba(0,0,0,.75),
+                        0 0 28px rgba(229,9,20,.15);
+        }
+
+        #securityMessage .premium-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 12%;
+            width: 76%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #e50914, transparent);
+            box-shadow: 0 0 15px #e50914;
+        }
+
+        #securityMessage .premium-close {
+            position: absolute;
+            top: 11px;
+            right: 12px;
+            width: 29px;
+            height: 29px;
+            border: 1px solid #383838;
+            border-radius: 50%;
+            background: #1b1b1b;
+            color: #aaa;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        #securityMessage .premium-avatar {
+            position: relative;
+            width: 84px;
+            height: 84px;
+            margin: 0 auto 15px;
+            padding: 3px;
+            border-radius: 50%;
+            background: linear-gradient(140deg, #ff4b55, #e50914, #65050a);
+            box-shadow: 0 0 0 5px rgba(229,9,20,.08),
+                        0 0 27px rgba(229,9,20,.24);
+            box-sizing: border-box;
+            animation: premiumAvatarFloat 3s ease-in-out infinite;
+        }
+
+        #securityMessage .premium-avatar svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        #securityMessage .premium-status {
+            position: absolute;
+            right: -1px;
+            bottom: 1px;
+            display: grid;
+            place-items: center;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #e50914;
+            color: white;
+            border: 3px solid #111;
+            font-size: 13px;
+            font-weight: 800;
+            box-sizing: border-box;
+        }
+
+        #securityMessage .premium-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 11px;
+            border: 1px solid rgba(229,9,20,.4);
+            border-radius: 4px;
+            background: rgba(229,9,20,.08);
+            color: #ff626a;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        #securityMessage .premium-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #e50914;
+            box-shadow: 0 0 8px #e50914;
+        }
+
+        #securityMessage .premium-heading {
+            margin: 16px 0 5px;
+            font-size: 24px;
+            line-height: 1.25;
+            font-weight: 800;
+            letter-spacing: -.6px;
+            color: #fff;
+        }
+
+        #securityMessage .premium-heading span {
+            color: #e50914;
+        }
+
+        #securityMessage .premium-subtitle {
+            margin: 0;
+            color: #d1d1d1;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        #securityMessage .premium-description {
+            max-width: 285px;
+            margin: 12px auto 18px;
+            color: #999;
+            font-size: 12px;
+            line-height: 1.75;
+        }
+
+        #securityMessage .premium-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #393939, transparent);
+        }
+
+        #securityMessage .premium-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+            color: #b7b7b7;
+            font-size: 10px;
+            letter-spacing: .25px;
+        }
+
+        #securityMessage .premium-shield {
+            display: inline-grid;
+            place-items: center;
+            width: 23px;
+            height: 23px;
+            border-radius: 6px;
+            background: rgba(229,9,20,.13);
+            color: #ff313b;
+            font-size: 14px;
+        }
+
+        @keyframes premiumAvatarFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #securityMessage,
+            #securityMessage * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    `;
+    document.head.appendChild(css);
+
+    function showBlockedMessage() {
+        let msg = document.getElementById("securityMessage");
+
+        if (!msg) {
+            msg = document.createElement("div");
+            msg.id = "securityMessage";
+
+            msg.innerHTML = `
+                <div class="premium-card">
+                    <button class="premium-close" aria-label="Close">×</button>
+
+                    <div class="premium-avatar">
+                        <svg viewBox="0 0 100 100" role="img"
+                             aria-label="Security assistant">
+                            <defs>
+                                <linearGradient id="premiumFaceBg" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#292929"/>
+                                    <stop offset="100%" stop-color="#090909"/>
+                                </linearGradient>
+                            </defs>
+                            <circle cx="50" cy="50" r="49" fill="url(#premiumFaceBg)"/>
+                            <path d="M15 100 Q17 69 39 66 L61 66 Q83 69 85 100"
+                                  fill="#242424"/>
+                            <path d="M37 59 L50 76 L63 59 L59 52 L41 52 Z"
+                                  fill="#d99a79"/>
+                            <ellipse cx="50" cy="41" rx="21" ry="25" fill="#e7b091"/>
+                            <path d="M29 39 Q23 12 48 12 Q76 11 73 43
+                                     L67 30 L59 23 Q46 32 31 29 Z"
+                                  fill="#171717"/>
+                            <path d="M37 41 Q42 38 46 41 M54 41 Q59 38 63 41"
+                                  fill="none" stroke="#392821" stroke-width="2.5"
+                                  stroke-linecap="round"/>
+                            <path d="M43 53 Q50 58 57 53"
+                                  fill="none" stroke="#9d4f46" stroke-width="2.5"
+                                  stroke-linecap="round"/>
+                            <path d="M39 67 L50 77 L61 67"
+                                  fill="none" stroke="#e50914" stroke-width="4"/>
+                        </svg>
+                        <span class="premium-status">✓</span>
+                    </div>
+
+                    <div class="premium-label">
+                        <span class="premium-dot"></span>
+                        SECURITY NOTICE
+                    </div>
+
+                    <h3 class="premium-heading">Access <span>Restricted.</span></h3>
+                    <p class="premium-subtitle">Hey there! This action is disabled.</p>
+
+                    <p class="premium-description">
+                        Right-click and selected keyboard shortcuts are restricted
+                        to help protect this website's content.
+                    </p>
+
+                    <div class="premium-divider"></div>
+
+                    <div class="premium-footer">
+                        <span class="premium-shield">✦</span>
+                        <span>PROTECTED EXPERIENCE · THANK YOU</span>
+                    </div>
+                </div>
+            `;
+
+            msg.querySelector(".premium-close").addEventListener("click", function () {
+                msg.classList.remove("security-visible");
+                clearTimeout(window.securityMessageTimer);
+            });
+
+            document.body.appendChild(msg);
+        }
+
+        msg.classList.remove("security-visible");
+        void msg.offsetWidth;
+        msg.classList.add("security-visible");
+
+        clearTimeout(window.securityMessageTimer);
+
+        window.securityMessageTimer = setTimeout(function () {
+            msg.classList.remove("security-visible");
+        }, 3000);
+    }
+
+    document.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+        showBlockedMessage();
+    }, true);
+
+    document.addEventListener("keydown", function (e) {
+        const key = e.key.toLowerCase();
+
+        const blocked =
+            e.key === "F12" ||
+            (e.ctrlKey && e.shiftKey && ["i", "j", "c"].includes(key)) ||
+            (e.ctrlKey && ["u", "s"].includes(key));
+
+        if (blocked) {
             e.preventDefault();
             e.stopPropagation();
-
-            let msg = document.getElementById("ownerRightClickMessage");
-
-            if (!msg) {
-                msg = document.createElement("div");
-                msg.id = "ownerRightClickMessage";
-
-                msg.innerHTML = `
-                    <div style="
-                        position:fixed;
-                        top:25px;
-                        left:50%;
-                        transform:translateX(-50%);
-                        background:#171717;
-                        color:#fff;
-                        padding:16px 24px;
-                        border-left:4px solid #dc3545;
-                        border-radius:10px;
-                        box-shadow:0 8px 30px #0008;
-                        font:14px Arial,sans-serif;
-                        z-index:2147483647;
-                        width:max-content;
-                        max-width:90vw;
-                    ">
-                        <strong>Right-Click Disabled</strong>
-                        <div style="margin-top:6px">
-                            Disabled by owner. Please contact the website owner.
-                        </div>
-                    </div>`;
-
-                document.body.appendChild(msg);
-            } else {
-                msg.style.display = "block";
-            }
-
-            clearTimeout(window.rightClickMessageTimer);
-
-            window.rightClickMessageTimer = setTimeout(function () {
-                msg.style.display = "none";
-            }, 2500);
-
-            return false;
-        }, true);
-
-        (function () {
-    function hideVideoMoreOptions() {
-        document.querySelectorAll("video").forEach(function (video) {
-            video.setAttribute("controlsList", "nodownload noplaybackrate");
-            video.setAttribute("disablePictureInPicture", "");
-
-            const root = video.getRootNode();
-
-            if (root instanceof ShadowRoot) {
-                const style = document.createElement("style");
-                style.textContent = `
-                    video::-webkit-media-controls-overflow-button {
-                        display: none !important;
-                    }
-                `;
-
-                if (!root.querySelector("#hide-video-overflow-style")) {
-                    style.id = "hide-video-overflow-style";
-                    root.appendChild(style);
-                }
-            }
-        });
-    }
-
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", hideVideoMoreOptions);
-    } else {
-        hideVideoMoreOptions();
-    }
+            showBlockedMessage();
+        }
+    }, true);
 })();
-
-    </script>
+</script>
+```
 
 </body>
 
